@@ -3,12 +3,19 @@ const bodyParser = require('body-parser');
 
 const ServerConfig = require('./config/serverConfig');
 const connectDB = require('./config/dbConfig');
+const userRouter = require('./routes/userRouter');
+const cartRouter = require('./routes/cartRouter');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(bodyParser.text());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//routing middleware
+//if your req route starts with /users then handle it with userRouter
+app.use('/users',userRouter)//connects router to the server
+app.use('/carts',cartRouter)
 
 app.post('/ping', (req,res)=>{
     console.log(req.body);

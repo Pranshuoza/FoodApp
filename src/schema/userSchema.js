@@ -1,6 +1,4 @@
-const mongoose = require('mongoose')
-
-
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -20,10 +18,10 @@ const userSchema = new mongoose.Schema({
         maxlength: [20,'Max Length less than 20'] 
     },
     mobileNumber: {
-        type: Number,
+        type: String,
         trim: true,
         unique: [true,'It should be unique'],
-        maxlength: [10]
+        maxlength: [10],
         required: [true,'Its needed']
     },
     email: {
@@ -44,4 +42,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model("User",userSchema); //collection
 
-module.exports =User;
+module.exports = User;
