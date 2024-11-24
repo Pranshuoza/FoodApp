@@ -9,7 +9,7 @@ const userSchema = new mongoose.Schema({
         trim: true,//extra spaces will be automatically removed
         maxlength: [20,'Max Length less than 20'] 
     },
-    LastName: {
+    lastName: {
         type: String,
         required: [true,'First Name is required'],
         minlength: [3,'First Name must be 3 character long'],
