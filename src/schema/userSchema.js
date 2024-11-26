@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -39,6 +40,12 @@ const userSchema = new mongoose.Schema({
 },{
     timestamps: true
 });
+
+userSchema.pre('save',async function () {
+    //you can modify your user before it is saved
+    const hashPassword = await bcrypt.hash(this.password, 10);
+    this.password=hashPassword;
+})
 
 const User = mongoose.model("User",userSchema); //collection
 

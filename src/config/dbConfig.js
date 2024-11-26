@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const serverConfig = require('./serverConfig');
+const ServerConfig = require('./serverConfig');
+
 
 /*
 Connection to mongo db

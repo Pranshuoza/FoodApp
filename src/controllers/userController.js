@@ -1,4 +1,3 @@
-const { model } = require('mongoose');
 const UserService = require('../services/userService');
 const userRepository = require('../repositeries/userRepository');
 
@@ -9,14 +8,14 @@ async function createUser( req , res){
     const UserService = new UserService(new userRepository());
     try{
         const response = await UserService.registerUser(req.body);
-    return res.json({
+        return res.status(201).json({
         message: 'Successfully registered the user',
         success: true,
         data: response,
-        error: {}
+        error:{}
     });
     }catch(error){
-        return res.json({
+        return res.status(error.statusCode).json({
             success: false,
             message: error.reason,
             data: {},
