@@ -11,6 +11,7 @@ const { isLoggedIn } = require("./validation/authValidator");
 const uploader = require("./middleware/multerMiddleware");
 const cloudinary = require("./config/cloudinaryConfig");
 const fs = require("fs/promises");
+const productRouter = require("./routes/productRoute");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/users", userRouter); //connects router to the server
 app.use("/carts", cartRouter);
 app.use("/auth", authRouter);
+app.use("/products", productRouter);
 
 app.post("/ping", isLoggedIn, (req, res) => {
   console.log(req.body);
@@ -31,7 +33,9 @@ app.post("/ping", isLoggedIn, (req, res) => {
 });
 
 app.post("/photo", uploader.single("incoming file"), async (req, res) => {
+  console.log(req.file);
   const result = await cloudinary.uploader.upload(req.file.path);
+  console.log("result from cloudinary", result);
   await fs.unlink(req.file.path);
   return res.json({ message:'ok' });
 });
