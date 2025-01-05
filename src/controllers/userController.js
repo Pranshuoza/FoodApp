@@ -1,4 +1,4 @@
-const UserService = require('../services/userService');
+const UserService = require('../services/authService');
 const userRepository = require('../repositeries/userRepository');
 
 async function createUser( req , res){
