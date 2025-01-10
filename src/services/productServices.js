@@ -1,54 +1,64 @@
-const { response } = require("express");
-const cloudinary = require("../config/cloudinaryConfig");
-const ProductRepository = require("../repositeries/productRepository");
-const fs = require("fs/promises");
-const InternalServerError = require("../utils/internalServerError");
-const NotFoundError = require("../utils/notFoundError");
+const coloudinary = require('../config/cloudinaryConfig');
+const ProductRespository = require('../repositeries/productRepository');
+const fs = require('fs/promises');
+const InternalServerError = require('../utils/internalServerError');
+const NotFoundError = require('../utils/notFoundError');
 
 async function createProduct(productDetails) {
-  const imagePath = productDetails.imagePath;
-  if (imagePath) {
-    try {
-      const cloudinaryResponse = await cloudinary.uploader.upload(imagePath);
-      var productImage = cloudinaryResponse.secure_url;
-      console.log(imagePath);
-      await fs.unlink(process.cwd() + "/" + imagePath);
-    } catch (error) {
-      console.log(error);
-      throw new InternalServerError();
+    const imagePath = productDetails.imagePath;
+    if(imagePath) {
+        try {
+            const coloudinaryResponse = await coloudinary.uploader.upload(imagePath);
+            var productImage = coloudinaryResponse.secure_url;
+            console.log(productImage);
+            await fs.unlink(process.cwd() + "/" + imagePath);
+        } catch(error) {
+            console.log(error);
+            throw new InternalServerError();
+        }
+        
     }
-  }
 
-  const product = await ProductRepository.createProduct({
-    ...productDetails,
-    productImage: productImage,
-  });
+    const product = await ProductRespository.createProduct({
+        ...productDetails,
+        productImage: productImage
+    });
 
-  if (!product) {
-    throw { reason: "Not able to create product", statusCode: 500 };
-  }
+    console.log(product);
+        
+    return product;
+    
 
-  return product;
 }
 
 async function getProductById(productId) {
-  const response = await ProductRepository.getProductById(productId);
-  if (!response) {
-    throw new NotFoundError("Product");
-  }
-  return response;
+    const response = await ProductRespository.getProductById(productId);
+    if(!response) {
+        throw new NotFoundError('Product');
+    }
+    return response;
 }
+
+// async function getAllProductsData() {
+//     const response = await ProductRespository.getAllProducts();
+//     if(!response) {
+//         throw new NotFoundError('Product');
+//     }
+//     return response;
+// }
 
 async function deleteProductById(productId) {
-  const response = await ProductRepository.deleteProductById(productId);
-  if (!response) {
-    throw new NotFoundError("Product");
-  }
-  return response;
+    const response = await ProductRespository.deleteProductById(productId);
+    if(!response) {
+        throw new NotFoundError('Product');
+    }
+    return response;
 }
 
+
 module.exports = {
-  createProduct,
-  getProductById,
-  deleteProductById,
-};
+    createProduct,
+    getProductById,
+    deleteProductById,
+    // getAllProductsData
+}

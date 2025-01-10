@@ -6,17 +6,17 @@ const userSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: [true, "First Name is required"],
-      minlength: [3, "First Name must be 3 character long"],
+      minlength: [3, "First Name must be 3 characters long"],
       lowercase: true,
-      trim: true, //extra spaces will be automatically removed
+      trim: true, // extra spaces will be automatically removed
       maxlength: [20, "Max Length less than 20"],
     },
     lastName: {
       type: String,
-      required: [true, "First Name is required"],
-      minlength: [3, "First Name must be 3 character long"],
+      required: [true, "Last Name is required"],  // Corrected the message here
+      minlength: [3, "Last Name must be 3 characters long"],  // Corrected field name
       lowercase: true,
-      trim: true, //extra spaces will be automatically removed
+      trim: true, // extra spaces will be automatically removed
       maxlength: [20, "Max Length less than 20"],
     },
     mobileNumber: {
@@ -24,13 +24,13 @@ const userSchema = new mongoose.Schema(
       trim: true,
       unique: [true, "It should be unique"],
       maxlength: [10],
-      required: [true, "Its needed"],
+      required: [true, "Mobile Number is needed"],  // Improved message
     },
     email: {
       type: String,
       trim: true,
       unique: [true, "It should be unique"],
-      required: [true, "Its needed"],
+      required: [true, "Email is needed"],  // Improved message
       match: [
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
         "Please fill a valid email address",
@@ -39,11 +39,11 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      minlength: [6, "Must be 6 character long"],
+      minlength: [6, "Password must be 6 characters long"],
     },
     role: {
-      tyoe: String,
-      default: ["USER"],
+      type: String,  // Corrected typo 'tyoe' to 'type'
+      default: "USER",  // Changed to single value instead of an array
       enum: ["USER", "ADMIN"],
     },
   },
@@ -53,11 +53,11 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.pre("save", async function () {
-  //you can modify your user before it is saved
+  // You can modify your user before it is saved
   const hashPassword = await bcrypt.hash(this.password, 10);
   this.password = hashPassword;
 });
 
-const User = mongoose.model("User", userSchema); //collection
+const User = mongoose.model("User", userSchema); // Collection
 
 module.exports = User;

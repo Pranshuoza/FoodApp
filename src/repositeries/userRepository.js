@@ -1,23 +1,36 @@
-const User = require('../schema/userSchema')
+const User = require('../schema/userSchema');
+const BadRequestError = require('../utils/badRequest');
+const InternalServerError = require('../utils/internalServerError')
 
-class userRepository {
-    async findUser(parameter){
-        try {
-            const response = await User.findOne({...parameter});
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+async function findUser(parameters) {
+    try {
+        const response = await User.findOne({ ...parameters });
+        return response;
+    } catch(error) {
+        console.log(error);
     }
+    
+} 
 
-    async createUser(userDetails) {
-        try {
-            const response = await User.create(userDetails);
-            return response;
-        } catch (error) {
-            console.log(error);
-        }
+async function createUser(userDetails) {
+    try {
+        const response = await User.create(userDetails);
+        return response;
+    } catch(error) {
+        if(error.name === 'ValidationError') {
+
+            const errorMessageList = Object.keys(error.errors).map((property) => {
+                return error.errors[property].message;
+            });
+            console.log(errorMessageList)
+            throw new BadRequestError(errorMessageList);
+        } 
+        throw new InternalServerError();
     }
+    
 }
 
-module.exports = userRepository;
+module.exports = {
+    findUser,
+    createUser
+};

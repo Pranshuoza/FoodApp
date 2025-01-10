@@ -1,16 +1,16 @@
 const mongoose = require('mongoose');
-const ServerConfig = require('./serverConfig');
+const serverConfig = require('./serverConfig');
 
-
-/*
-Connection to mongo db
-*/
+/**
+ * The below function helps us to connect to a mongodb server
+ */
 async function connectDB() {
-    try{
-        await mongoose.connect(process.env.DB_URL);
-        console.log("Successfully connected to the mongoose server");
-    }catch(error){
-        console.error("Error connecting to MongoDB:", error.message);
+    try {
+        await mongoose.connect(serverConfig.DB_URL);
+        console.log("Successfully connected to the mongo db server .....");
+    } catch (error) {
+        console.log("Not able to connect to the mongodb server");
+        console.log(error);
     }
 }
 

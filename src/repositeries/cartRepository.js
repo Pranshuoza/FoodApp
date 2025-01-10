@@ -18,7 +18,7 @@ async function createCart() {
   }
 }
 
-async function getCard() {
+async function getCardByUserId() {
   try {
     const cart = await cart.findOne({
       user: userId,
@@ -30,4 +30,4 @@ async function getCard() {
   }
 }
 
-module.exports = { createCart, getCard };
+module.exports = { createCart, getCardByUserId };
