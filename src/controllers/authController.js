@@ -1,31 +1,32 @@
-// const { COOKIE_SECURE, FRONTEND_URL } = require("../config/serverConfig");
+const { COOKIE_SECURE, FRONTEND_URL } = require("../config/serverConfig");
 const { loginUser } = require("../services/authService");
 
 
-// async function logout(req, res) {
+async function logout(req, res) {
 
-//     console.log("Cookie from frontend", req.cookies);
+    console.log("Cookie from frontend", req.cookies);
 
-//     res.cookie("authToken", "", {
-//         httpOnly: true,
-//         secure: COOKIE_SECURE,
-//         sameSite: "lax",
-//         maxAge: 7 * 24 * 60 * 60 * 1000,
-//         domain: FRONTEND_URL
-//     });
-//     return res.status(200).json({
-//         success: true,
-//         message: "Log out successfull",
-//         error: {},
-//         data: {}
-//     });
-// }
+    res.cookie("authToken", "", {
+        httpOnly: true,
+        secure: COOKIE_SECURE,
+        sameSite: "lax",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+        domain: FRONTEND_URL
+    });
+    return res.status(200).json({
+        success: true,
+        message: "Log out successfull",
+        error: {},
+        data: {}
+    });
+}
 async function login(req, res) {
     
     try {
         const loginPayload = req.body;
-
+console.log("1")
         const response = await loginUser(loginPayload);
+        console.log("2")
 
         res.cookie("authToken", response.token, {
             httpOnly: true,
@@ -34,6 +35,7 @@ async function login(req, res) {
             domain: FRONTEND_URL,
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
+        console.log("3")
 
         return res.status(200).json({
             success: true,
@@ -45,7 +47,8 @@ async function login(req, res) {
             error: {}
         })
     } catch(error) {
-        return res.status(error.statusCode).json({
+        const statusCode = error.statusCode || 500;  // Default to 500 if not defined
+        return res.status(statusCode).json({
             success: false,
             data: {},
             message: error.message,
@@ -56,5 +59,5 @@ async function login(req, res) {
 }
 
 module.exports = {
-    login,
+    login,logout
 }

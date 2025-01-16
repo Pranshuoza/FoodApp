@@ -1,13 +1,21 @@
-const { CLOUDINARY_CLOUD_NAME, CLOUDINARY_API, CLOUDINARY_API_SECRET } = require('./serverConfig');
+const cloudinary = require("cloudinary").v2;
+const {CloudinaryStorage} = require('multer-storage-cloudinary');
 
-const coloudinary = require('cloudinary').v2;
-
-coloudinary.config({
-    cloud_name: CLOUDINARY_CLOUD_NAME,
-    api_key: CLOUDINARY_API,
-    api_secret: CLOUDINARY_API_SECRET
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key : process.env.CLOUD_API_KEY,
+    api_secret : process.env.CLOUD_API_SECRET
 });
 
-module.exports = {
-    coloudinary
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+      folder: 'BookStore',
+      allowedFormats: ["jpeg","jpg","png"],
+    },
+});
+
+module.exports ={
+    cloudinary,
+    storage
 }

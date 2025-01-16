@@ -1,6 +1,8 @@
 const Cart = require("../schema/cartSchema");
+const InternalServerError = require("../utils/internalServerError");
+const NotFoundError = require("../utils/notFoundError");
 
-async function createCart() {
+async function createcart(userId) {
   try {
     const newCart = await Cart.create({
       user: userId,
@@ -11,18 +13,18 @@ async function createCart() {
       const errorMessageList = Object.keys(error.errors).map((property) => {
         return error.errors[property].message;
       });
-      throw new BadRequestError();
+      throw new BadRequestError(errorMessageList);
     }
     console.log(error);
     throw new InternalServerError();
   }
 }
 
-async function getCardByUserId() {
+async function getCartByUserId(userId) {
   try {
-    const cart = await cart.findOne({
+    const cart = await Cart.findOne({
       user: userId,
-    });
+    }).populate("items.product");
     return cart;
   } catch (error) {
     console.log(error);
@@ -30,4 +32,27 @@ async function getCardByUserId() {
   }
 }
 
-module.exports = { createCart, getCardByUserId };
+async function clearCart(userId) {
+  try {
+    const cart = await Cart.findOne({
+      user: userId,
+    });
+    if (!cart) {
+      throw new NotFoundError("Cart");
+    }
+
+    cart.items = [];
+
+    await cart.save();
+
+    return cart;
+  } catch (error) {
+    throw new InternalServerError();
+  }
+}
+
+module.exports = {
+  createcart,
+  getCartByUserId,
+  clearCart,
+};

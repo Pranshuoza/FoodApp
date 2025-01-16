@@ -1,17 +1,21 @@
-const coloudinary = require('../config/cloudinaryConfig');
+const cloudinary = require('../config/cloudinaryConfig');
 const ProductRespository = require('../repositeries/productRepository');
 const fs = require('fs/promises');
 const InternalServerError = require('../utils/internalServerError');
 const NotFoundError = require('../utils/notFoundError');
 
 async function createProduct(productDetails) {
-    const imagePath = productDetails.imagePath;
-    if(imagePath) {
+    // 1. We should check if an image is coming to create the product, then we should first upload it on 
+    // coloudinary
+    const imagePaths = productDetails.imagePath;
+    console.log(process.cwd() + "/" + imagePaths)
+    if(imagePaths) {
         try {
-            const coloudinaryResponse = await coloudinary.uploader.upload(imagePath);
-            var productImage = coloudinaryResponse.secure_url;
+            const cloudinaryResponse = await cloudinary.uploader.upload(imagePaths);
+            var productImage = cloudinaryResponse.secure_url;
             console.log(productImage);
-            await fs.unlink(process.cwd() + "/" + imagePath);
+            const imagePathInPc = process.cwd() + "/" + imagePaths;
+            await fs.unlink(imagePathInPc);
         } catch(error) {
             console.log(error);
             throw new InternalServerError();
@@ -19,6 +23,7 @@ async function createProduct(productDetails) {
         
     }
 
+    // 2. Then use the url from coloudinary and other propduct details to add product in db
     const product = await ProductRespository.createProduct({
         ...productDetails,
         productImage: productImage
@@ -39,13 +44,13 @@ async function getProductById(productId) {
     return response;
 }
 
-// async function getAllProductsData() {
-//     const response = await ProductRespository.getAllProducts();
-//     if(!response) {
-//         throw new NotFoundError('Product');
-//     }
-//     return response;
-// }
+async function getAllProductsData() {
+    const response = await ProductRespository.getAllProducts();
+    if(!response) {
+        throw new NotFoundError('Product');
+    }
+    return response;
+}
 
 async function deleteProductById(productId) {
     const response = await ProductRespository.deleteProductById(productId);
@@ -60,5 +65,5 @@ module.exports = {
     createProduct,
     getProductById,
     deleteProductById,
-    // getAllProductsData
+    getAllProductsData
 }

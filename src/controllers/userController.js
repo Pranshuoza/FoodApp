@@ -1,5 +1,6 @@
 const { registerUser } = require('../services/userService');
 const AppError = require('../utils/appError');
+
 async function createUser(req, res) {
 
     try {

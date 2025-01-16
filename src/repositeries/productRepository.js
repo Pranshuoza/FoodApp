@@ -1,4 +1,4 @@
-const { Product } = require('../schema/productSchema');
+const Product = require('../schema/productSchema');
 const BadRequestError = require('../utils/badRequest');
 const InternalServerError = require('../utils/internalServerError');
 
@@ -6,13 +6,14 @@ async function createProduct(productDetails) {
     try {
         const response = await Product.create(productDetails);
         return response;
-    } catch (error) {
-        if (error.name === 'ValidationError') {
+    } catch(error) {
+        if(error.name === 'ValidationError') {
+
             const errorMessageList = Object.keys(error.errors).map((property) => {
                 return error.errors[property].message;
-            });
-            throw new BadRequestError(errorMessageList.join(', ')); 
-        }
+            })
+            throw new BadRequestError(errorMessageList);
+        } 
         console.log(error);
         throw new InternalServerError();
     }
@@ -20,7 +21,7 @@ async function createProduct(productDetails) {
 
 async function getProductById(productId) {
     try {
-        const product = await Product.findById(productId); 
+        const product = await Product.findById(productId);
         return product;
     } catch (error) {
         console.log(error);
@@ -28,10 +29,20 @@ async function getProductById(productId) {
     }
 }
 
-async function deleteProductById(productId) { 
+async function getAllProducts() {
     try {
-        const product = await Product.findByIdAndDelete(productId); 
-        return product;
+        const products = await Product.find({});
+        return products;
+    } catch (error) {
+        console.log(error);
+        throw new InternalServerError();
+    }
+}
+
+async function deleteProductById(productId) {
+    try {
+        const response = await Product.findByIdAndDelete(productId);
+        return response;
     } catch (error) {
         console.log(error);
         throw new InternalServerError();
@@ -40,6 +51,7 @@ async function deleteProductById(productId) {
 
 module.exports = {
     createProduct,
+    getAllProducts,
     getProductById,
-    deleteProductById,
-};
+    deleteProductById
+}

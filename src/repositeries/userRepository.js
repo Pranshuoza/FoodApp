@@ -1,6 +1,6 @@
 const User = require('../schema/userSchema');
 const BadRequestError = require('../utils/badRequest');
-const InternalServerError = require('../utils/internalServerError')
+const InternalServerError = require('../utils/internalServerError');
 
 async function findUser(parameters) {
     try {
@@ -25,6 +25,7 @@ async function createUser(userDetails) {
             console.log(errorMessageList)
             throw new BadRequestError(errorMessageList);
         } 
+        // console.log(error);
         throw new InternalServerError();
     }
     
